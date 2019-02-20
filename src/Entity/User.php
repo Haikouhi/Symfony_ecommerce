@@ -29,6 +29,7 @@ class User implements UserInterface
      */
     private $roles = [];
 
+
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
@@ -69,13 +70,20 @@ class User implements UserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+       // $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
 
     public function setRoles(array $roles): self
     {
+
+        foreach ($roles as $role) {
+            if (substr($role, 0, 5) !== 'ROLE_') {
+                throw new InvalidArgumentException("Chaque rôle doit commencer par 'ROLE_'");
+            }
+        }
+
         $this->roles = $roles;
 
         return $this;
